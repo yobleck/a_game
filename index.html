@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>A Game</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body id="body">
+  
+	
+    <!-- <h5>This is a game?</h5> -->
+    <!--  This is using Node.js <span id="node-version"></span>, Chromium <span id="chrome-version"></span>, and Electron <span id="electron-version"></span>. -->
+	
+	<!-- <p>TODO: menus (in separate tabs?), roof layers check if in house, separate map files for dungeon/extra floors</p> -->
+	<!-- <p id="presstest">presstest</p>  for testing user inputs-->
+	<!-- <pre id="arraytest">arraytest</pre>  for formatted text-->
+	
+	<!-- load images for use in renderer.js-->
+	<img id="overworld_test" src="images/overworld_test.png" alt="Overworld bg" width="100" height="100" class="pixelated" style="display: none;">
+	<img id="player" src="images/player.png" alt="player" width="1" height="1" style="display: none;">
+	<img id="grass" src="images/grass.png" alt="grass" width="1" height="1" style="display: none;">
+	<img id="floor" src="images/floor.png" alt="floor" width="1" height="1" style="display: none;">
+	<img id="wall" src="images/wall.png" alt="wall" width="1" height="1" style="display: none;">
+	<img id="water" src="images/water.png" alt="water" width="1" height="1" style="display: none;">
+	<img id="ladder" src="images/ladder.png" alt="ladder" width="1" height="1" style="display: none;">
+	<img id="error" src="images/error.png" alt="error" width="1" height="1" style="display: none;">
+	
+	
+	<canvas id="thecanvas" width="100" height="100" style="border:1px solid #000000;image-rendering: pixelated;" class="pixelated"> <!-- -->
+	Your browser does not support the HTML5 canvas tag. If you are reading this something is seriously wrong. Please contact the SCP Foundation for further assistance.</canvas>
+	
+	
+    <!-- You can also require other files to run in this process  should i put collision and renderer in here?-->
+    <script src="./user_input.js"></script>
+
+  </body>
+</html>

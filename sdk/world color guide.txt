@@ -1,0 +1,5 @@
+black 0,0,0 = wall
+dark green 0,100,0 = grass
+brown 139,69,19 = floor
+purple 147,112,219 = ladder      todo: distinguish between up and down
+med blue 0,0,205 = water

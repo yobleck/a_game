@@ -1,0 +1,10 @@
+main.js is its own thing
+
+
+
+
+rename renderer.js to user_input.js
+
+which calls collision.js
+
+and the new renderer.js if output is true/successful
