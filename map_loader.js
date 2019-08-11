@@ -1,4 +1,4 @@
-//this file loads the map into an array from the map.wtf file
+//this file loads the map into an array from the "insert map name here".wtf file
 
 //initialize stuff
 var map_array = [];
@@ -23,5 +23,5 @@ exports.load_map = load_map;
 
 
 //work on this later
-function switch_map(){}//this is for ladders. when user steps on ladder this functin will trigger and switch maps or run laod map with a different filepath
+function switch_map(){}//this is for ladders. when user steps on ladder this function will trigger and switch maps or run load map with a different file path
 									 // not looking forward to pairing ladders together between maps :(

@@ -2,8 +2,10 @@
 // All of the Node.js APIs are available in this process. after enabling nodeIntegration
 //this file is for taking user inputs and handing them over to collision.js
 
+var fs = require('fs');
 //calls collision.js so its functions can be used (also commands in collision will execute by themselves so keep in func)
 var collision = require("./collision");
+//var inventory_loader = require("./inventory_loader");  //OLD remove later
 
 
 //variables for key presses
@@ -11,32 +13,34 @@ var rightpressed = false;
 var leftpressed = false;
 var uppressed = false;
 var downpressed = false;
+//var for inventory open status
+var invopen = false
+fs.writeFileSync('./sav/inv.opn', invopen);
+console.log(invopen);
+
 
 //listens for wasd keypresses
 //87=w  65=a  83=s  68=d
 window.addEventListener("keydown",keydownhandler);
 window.addEventListener("keyup",keyuphandler);
 
-//keydown spams rapidly and is kinda laggy if held so call collision function in keyup
+
+//keydown spams rapidly and is kinda laggy if held so call collision function in keyup    update: fixed because smaller rendering size?    update2: or not. look into request animation frame or setinterval
 function keydownhandler(event) {
     if(event.keyCode == 68) {
         rightpressed = true;
-		//document.getElementById("presstest").innerHTML = "d down";
 		collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 65) {
         leftpressed = true;
-		//document.getElementById("presstest").innerHTML = "a down";
 		collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 83) {
     	downpressed = true;
-		//document.getElementById("presstest").innerHTML = "s down";
 		collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 87) {
     	uppressed = true;
-		//document.getElementById("presstest").innerHTML = "w down";
 		collision.cpm(event.keyCode);
     }
 }
@@ -46,25 +50,29 @@ function keydownhandler(event) {
 function keyuphandler(event) {
     if(event.keyCode == 68) {
         rightpressed = true;
-		//document.getElementById("presstest").innerHTML = "d up";
 		//collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 65) {
         leftpressed = true;
-		//document.getElementById("presstest").innerHTML = "a up";
 		//collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 83) {
     	downpressed = true;
-		//document.getElementById("presstest").innerHTML = "s up";
 		//collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 87) {
     	uppressed = true;
-		//document.getElementById("presstest").innerHTML = "w up";
 		//collision.cpm(event.keyCode);
     }
+	/* OLD disable popup style menu and eventually remove
+	else if(event.keyCode == 69) {
+		if(fs.readFileSync("./sav/inv.opn", "utf8", function(err, contents) {}) == "false"){
+			invopen = true;
+			fs.writeFileSync('./sav/inv.opn', invopen);
+			inventory_loader.create_inventory();
+		}
+    }*/
 }
 
 //todo: add mouseclick and other keydown/up functionality
-//redraw canvas on tick or on keypress? action game will require tick. rpg might only need update screen on user input
+
