@@ -42,6 +42,10 @@ for x in range(size[0]):
 		elif imgarray[x][y][0]==147 and imgarray[x][y][1]==112 and imgarray[x][y][2]==219:
 			outarray[x][y]=4;
 			
+		#checks if gray 100,100,100
+		elif imgarray[x][y][0]==100 and imgarray[x][y][1]==100 and imgarray[x][y][2]==100:
+			outarray[x][y]=5;
+			
 		else:
 			outarray[x][y]=9;
 			print ("the pixel at coordinates", x , ",", y, "does not correspond to an accepted value." );
@@ -49,4 +53,4 @@ for x in range(size[0]):
 #print(outarray);
 
 
-numpy.savetxt("map.wtf",outarray, fmt="%.4g");
+numpy.savetxt("map.wtf",outarray, fmt="%.4g");  #savetxt adds a newline char at the need of the file which must be removed
