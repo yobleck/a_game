@@ -15,7 +15,7 @@ var readplayer = fs.readFileSync("./sav/player.pos", "utf8", function(err, conte
 var player_pos = readplayer.split(",");
 player_pos[0] = parseInt(player_pos[0]);
 player_pos[1] = parseInt(player_pos[1]);
-console.log(player_pos);//p.s. players name is Eebruk
+//console.log(player_pos);//p.s. players name is Eebruk
 
 
 //draws the map for the first time

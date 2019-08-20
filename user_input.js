@@ -16,31 +16,31 @@ var downpressed = false;
 //var for inventory open status
 var invopen = false
 fs.writeFileSync('./sav/inv.opn', invopen);
-console.log(invopen);
 
 
 //listens for wasd keypresses
 //87=w  65=a  83=s  68=d
-window.addEventListener("keydown",keydownhandler);
-window.addEventListener("keyup",keyuphandler);
-
+var canvas = document.getElementById("thecanvas");
+canvas.addEventListener("keydown",keydownhandler,false);
+canvas.addEventListener("keyup",keyuphandler,false);
+//document.getElementById("thecanvas").focus();
 
 //keydown spams rapidly and is kinda laggy if held so call collision function in keyup    update: fixed because smaller rendering size?    update2: or not. look into request animation frame or setinterval
 function keydownhandler(event) {
     if(event.keyCode == 68) {
-        rightpressed = true;
+        //rightpressed = true;
 		collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 65) {
-        leftpressed = true;
+        //leftpressed = true;
 		collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 83) {
-    	downpressed = true;
+    	//downpressed = true;
 		collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 87) {
-    	uppressed = true;
+    	//uppressed = true;
 		collision.cpm(event.keyCode);
     }
 }
@@ -49,19 +49,19 @@ function keydownhandler(event) {
 //should dirpressed be set to false?
 function keyuphandler(event) {
     if(event.keyCode == 68) {
-        rightpressed = true;
+        //rightpressed = true;
 		//collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 65) {
-        leftpressed = true;
+        //leftpressed = true;
 		//collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 83) {
-    	downpressed = true;
+    	//downpressed = true;
 		//collision.cpm(event.keyCode);
     }
     else if(event.keyCode == 87) {
-    	uppressed = true;
+    	//uppressed = true;
 		//collision.cpm(event.keyCode);
     }
 	/* OLD disable popup style menu and eventually remove
@@ -73,6 +73,4 @@ function keyuphandler(event) {
 		}
     }*/
 }
-
 //todo: add mouseclick and other keydown/up functionality
-
