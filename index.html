@@ -64,9 +64,10 @@
 	<!-- <p>TODO: menus (in separate tabs?), roof layers check if in house, separate map files for dungeon/extra floors</p> -->
 	
     <!-- You can also require other files to run in this process  should i put collision and renderer in here?-->
-	<script src="./battle.js"></script>
-	<script src="./tab_switcher.js"></script>
-    <script src="./user_input.js"></script>
+	<script src="./battle.js"></script> <!--calls script for bullet hell core gameplay loop-->
+	<script>stop();</script> <!--set initial conditions for battle-->
+	<script src="./tab_switcher.js"></script> <!--calls script for switching tabs-->
+    <script src="./user_input.js"></script> <!--calls script for over world movement-->
 	
 	</body>
 </html>
