@@ -6,13 +6,11 @@
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/yobleck/a_game",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "a game",
+    "or something"
   ],
   "author": "Yobleck",
   "license": "CC0-1.0, or whatever",

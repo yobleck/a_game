@@ -64,13 +64,5 @@ function keyuphandler(event) {
     	//uppressed = true;
 		//collision.cpm(event.keyCode);
     }
-	/* OLD disable popup style menu and eventually remove
-	else if(event.keyCode == 69) {
-		if(fs.readFileSync("./sav/inv.opn", "utf8", function(err, contents) {}) == "false"){
-			invopen = true;
-			fs.writeFileSync('./sav/inv.opn', invopen);
-			inventory_loader.create_inventory();
-		}
-    }*/
 }
 //todo: add mouseclick and other keydown/up functionality

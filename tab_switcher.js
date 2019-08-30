@@ -46,6 +46,10 @@ function openinv(evt, invname) {
   evt.currentTarget.className += " active";
 }
 
-
-
+/////////
 document.getElementById("main_tab").click();
+
+function endgame(){ //TODO: have an input that tells whether won or lost and adds to a main counter
+	document.getElementById("main_tab").click();
+}
+module.exports.eg = endgame; //why do i have to have "module." here? it works without it in every other file

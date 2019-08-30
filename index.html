@@ -19,10 +19,10 @@
 		
 		<!-- handle proper tab key usage-->
 		<div class="tab">
-			<button id="main_tab" class="tablinks" onclick="opentab(event, 'main');pause()">Main</button>
+			<button id="main_tab" class="tablinks" onclick="opentab(event, 'main');try{pause()}catch(err){}">Main</button>
 			<button id="inventory_tab" class="tablinks" onclick="opentab(event, 'inventory');pause()">Inventory</button>
 			<button id="minimap_tab" class="tablinks" onclick="opentab(event, 'minimap');pause()">Minimap</button>
-			<button id="battle_tab" class="tablinks" onclick="opentab(event, 'battle');start()">Battle</button>
+			<button id="battle_tab" class="tablinks" onclick="opentab(event, 'battle');start()">Battle</button> <!--TODO: repeatedly clicking this lags game. eventually fix by making not be button-->
 			<button id="help_tab" class="tablinks" onclick="opentab(event, 'help');pause()">Help</button>
 		</div>
 		
@@ -48,7 +48,7 @@
 		</div>
 		
 		<div id="battle" class="tabcontent">
-			<canvas id="battlecanvas" width="100" height="100" class="pixelated" tabindex="0">
+			<canvas id="battlecanvas" width="100" height="100" class="pixelated" tabindex="0">   <!-- <p>TODO: random bullet hell music playing from NT ETG TP etc music</p> -->
 		</div>
 		
 		
@@ -63,10 +63,10 @@
 	
 	<!-- <p>TODO: menus (in separate tabs?), roof layers check if in house, separate map files for dungeon/extra floors</p> -->
 	
-    <!-- You can also require other files to run in this process  should i put collision and renderer in here?-->
+    <!--Scripts and stuff-->
+	<script src="./tab_switcher.js"></script> <!--calls script for switching tabs-->
 	<script src="./battle.js"></script> <!--calls script for bullet hell core gameplay loop-->
 	<script>stop();</script> <!--set initial conditions for battle-->
-	<script src="./tab_switcher.js"></script> <!--calls script for switching tabs-->
     <script src="./user_input.js"></script> <!--calls script for over world movement-->
 	
 	</body>
