@@ -48,6 +48,8 @@ var enemy_projectile = []; //terms of inner arrays are current x coordinate, cur
 var enemy_angle// = 0;
 var enemy_fire_mode = []; //0=random, 1=patrol, 2=chase, 3=ambush
 var patrol_delay; //counter for patrol fire so it fires at a consistent speed
+var chase_delay;
+var ambush_delay;
 
 //summoning "graphics"
 var player_img = document.getElementById("player");
@@ -108,10 +110,10 @@ function clickhandler(event){
 	projectile_counter[projectile_counter.length -1][4] = 0; //new y coor
 }
 
-//enemy projectile functions
+//enemy projectile functions //TODO: when multiple enemies share firemode some dont fire at all
 //random
 function random_fire(enemy){ //fires projectiles in random directions //takes enemy_pos[i] as input
-	var temp_delay = Math.floor(Math.random()*100); //slows down fire rate
+	var temp_delay = Math.floor(Math.random()*100); //slows down fire rate and makes the timing random
 	if(temp_delay < 5){
 		enemy_angle = ((Math.atan2((enemy[1]-Math.floor(Math.random()*100)),(Math.floor(Math.random()*100)-enemy[0]))/(Math.PI/180))+360)%360; //see clickhandler() for more details
 		enemy_projectile.push([0,0,0,0,0]); //adds new projectile to array
@@ -125,8 +127,8 @@ function random_fire(enemy){ //fires projectiles in random directions //takes en
 //patrol
 function patrol_fire(enemy){ //fire projectiles in a circular pattern or at every point on the grid in succession
 	patrol_delay++; //TODO: multiple enemies with the same fire mode will speed this up
-	if(patrol_delay%5==0){
-		enemy_angle = Date.now().toString().substr(9)*0.36; //converts date into angle only works as long as UNIX time has same # of digits
+	if(patrol_delay%10==0){ //slows down fire rate and fires at constant rate
+		enemy_angle = Date.now().toString().substr(9)*0.18; //converts date into angle only works as long as UNIX time has same # of digits   .36 convert 1000ms to 360deg
 		enemy_projectile.push([0,0,0,0,0]); //adds new projectile to array
 		enemy_projectile[enemy_projectile.length -1][0] = enemy[0]; //current enemy x coor
 		enemy_projectile[enemy_projectile.length -1][1] = enemy[1]; //current enemy y coor
@@ -136,13 +138,35 @@ function patrol_fire(enemy){ //fire projectiles in a circular pattern or at ever
 	}
 }
 //chase
-function chase_fire(enemy){}
+function chase_fire(enemy){
+	chase_delay++; //TODO: make fire one behind player by reading player key presses
+	if(chase_delay%20==0){ //slows down fire rate and fires at constant rate
+		enemy_angle = ((Math.atan2((enemy[1]-battle_pos[1]),(battle_pos[0]-enemy[0]))/(Math.PI/180))+360)%360;
+		enemy_projectile.push([0,0,0,0,0]); //adds new projectile to array
+		enemy_projectile[enemy_projectile.length -1][0] = enemy[0]; //current enemy x coor
+		enemy_projectile[enemy_projectile.length -1][1] = enemy[1]; //current enemy y coor
+		enemy_projectile[enemy_projectile.length -1][2] = enemy_angle; //angle to fire at
+		enemy_projectile[enemy_projectile.length -1][3] = 0; //new x coor
+		enemy_projectile[enemy_projectile.length -1][4] = 0; //new y coor
+	}
+}
 //ambush
-function ambush_fire(enemy){}
+function ambush_fire(enemy){
+	ambush_delay++; //TODO: make fire one ahead of player by reading player key presses
+	if(ambush_delay%20==0){ //slows down fire rate and fires at constant rate
+		enemy_angle = ((Math.atan2((enemy[1]-battle_pos[1]),(battle_pos[0]-enemy[0]))/(Math.PI/180))+360)%360;
+		enemy_projectile.push([0,0,0,0,0]); //adds new projectile to array
+		enemy_projectile[enemy_projectile.length -1][0] = enemy[0]; //current enemy x coor
+		enemy_projectile[enemy_projectile.length -1][1] = enemy[1]; //current enemy y coor
+		enemy_projectile[enemy_projectile.length -1][2] = enemy_angle; //angle to fire at
+		enemy_projectile[enemy_projectile.length -1][3] = 0; //new x coor
+		enemy_projectile[enemy_projectile.length -1][4] = 0; //new y coor
+	}
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //UPDATES the game state
-function update(){
+function update(){ //var tempa = performance.now();
 	{
 	//if key pressed down and within play area, move player accordingly
 	if(rightpressed==true && battle_pos[0]<99 && map_array[battle_pos[0]+1][battle_pos[1]]==0 /*|| map_array[battle_pos[0]+1][battle_pos[1]]==3*/){ //left  //set to 98 instead of 99 because of 'undefined' bug
@@ -177,7 +201,7 @@ function update(){
 	//TODO: homing missiles that track the mouse pos and explode on contact or when reaching the mouse
 	for(i=0;i<projectile_counter.length;i++){
 		//calculate new coor from start and angle //assume hypotenuse of 1 unit for now but maybe make it changeable based on player movement so that projectile speed changes
-		projectile_counter[i][3] = projectile_counter[i][0]+Math.sin((projectile_counter[i][2]+90)*(Math.PI/180)); //new x coor  //convert from degrees to rad with *(Math.PI/180)   have to add 90 degrees for some reason??
+		projectile_counter[i][3] = projectile_counter[i][0]+Math.sin((projectile_counter[i][2]+90)*(Math.PI/180)); //new x coor  //convert from degrees to rad with *(Math.PI/180)   have to add 90 degrees for some reason?? use cos?
 		projectile_counter[i][4] = projectile_counter[i][1]+Math.cos((projectile_counter[i][2]+90)*(Math.PI/180)); //new y coor
 		if(projectile_counter[i][3]>=0 && projectile_counter[i][3]<=99 && projectile_counter[i][4]>=0 && projectile_counter[i][4]<=99){ //checks to see if projectile is inbounds  //can't go above 99?
 			//draw new coor to map_array
@@ -207,6 +231,7 @@ function update(){
 				num_enemies--; //and reduce enemy count
 				enemy_fire_mode.splice(i,1); //and make enemy stop firing
 				//TODO: delete projectile by searching projectile_counter for matching coordinates and splicing
+				//TODO: make canvas border flash a color to indicate hit
 			}
 		}
 	}
@@ -245,27 +270,23 @@ function update(){
 		}
 	}
 //////////////////////////////////////////////////////////////////////////////////////////////
-	//HANDLE ENEMY AIMING A.I./PROJECTILES HERE      //TODO: A.I. shoot projectiles pacman ghost style?   1/4 complete
+	//HANDLE ENEMY AIMING A.I./PROJECTILES HERE      //TODO: A.I. shoot projectiles pacman ghost style?   2/4 complete
 	//enemies will have scanning range
 	//fire pacman style patterns   //each enemy is assigned a mode and fires a projectile every tick if player is in range
-		//chase: fire behind player
-		//ambush: fire in front of player
-		//patrol: fire in circle
-		//random: self explanatory
-		
+
 	//handle generation of projectiles here
 	for(i=0;i<enemy_fire_mode.length;i++){
 		if(enemy_fire_mode[i]==0){
-			random_fire(enemy_pos[i]);
+			random_fire(enemy_pos[i]); //random: self explanatory
 		}
 		else if(enemy_fire_mode[i]==1){
-			patrol_fire(enemy_pos[i]);
+			patrol_fire(enemy_pos[i]); //patrol: fire in circle
 		}
 		else if(enemy_fire_mode[i]==2){
-			chase_fire(enemy_pos[i]);
+			chase_fire(enemy_pos[i]); //chase: fire behind player
 		}
 		else if(enemy_fire_mode[i]==3){
-			ambush_fire(enemy_pos[i]);
+			ambush_fire(enemy_pos[i]); //ambush: fire in front of player
 		}
 	}
 	
@@ -280,8 +301,7 @@ function update(){
 			//erase old drawing  //this can be changed to create ghost trails
 			map_array[Math.floor(enemy_projectile[i][0])][Math.floor(enemy_projectile[i][1])] = 0;
 			//set new coor to current coor  //should new coor be reset or left as is?
-			//TODO: player take damage from projectiles here
-			//if(enemy_projectile[i][0]==battle_pos[0] && enemy_projectile[i][1]==battle_pos[1]){player_health--;console.log(player_health);}
+			if(Math.floor(enemy_projectile[i][0])==battle_pos[0] && Math.floor(enemy_projectile[i][1])==battle_pos[1]){player_health--;} //player takes damage from projectiles here //TODO: make canvas border flash red
 			enemy_projectile[i][0] = enemy_projectile[i][3];
 			enemy_projectile[i][1] = enemy_projectile[i][4];
 		}
@@ -289,6 +309,8 @@ function update(){
 			map_array[Math.floor(enemy_projectile[i][0])][Math.floor(enemy_projectile[i][1])] = 0;
 			enemy_projectile.splice(i,1);
 		}
+		//redraw player
+		map_array[battle_pos[0]][battle_pos[1]]=1;
 		//redraw enemy
 		//in lazy try catch block for now. TODO: set this up so that it only runs if enemy still exists   //FOR LOOP WONT WORK CAUSES HUGE ISSUES
 		try{
@@ -316,20 +338,23 @@ function update(){
 		console.log("YOU LOSE :(");
 	}
 	//TODO: save player win/lose count to file
+	//var tempb = performance.now();
+	//console.log("update time: ",tempb - tempa);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 var canvas_ctx = battle_canvas.getContext("2d");
 //DRAW player, enemies and projectiles on screen
-//TODO: use player and enemy take damage var to make screen border flash colors to indicate that damage has been taken/a hit has been made
-//TODO: health bar for player and maybe enemy count and health bars      separate canvas?
-function render(){
+//TODO: use player and enemy take damage var to make screen border flash colors to indicate that damage has been taken/a hit has been made  //use css border around canvas
+//TODO: health bar for player and maybe enemy count and health bars      //separate canvas or <p>?
+function render(){ //var tempa = performance.now();
+	canvas_ctx.clearRect(0,0,parseInt(getComputedStyle(battle_canvas).getPropertyValue("width"),10),parseInt(getComputedStyle(battle_canvas).getPropertyValue("height"),10)); //clear canvas for redraw
 	for(i=0;i<100;i++){
 		for(j=0;j<100;j++){
-			if(map_array[i][j]== 0){//nothing
-					canvas_ctx.drawImage(wall_img,i,j,1,1);
-			}
-			else if(map_array[i][j]== 1){//player
+			//if(map_array[i][j]== 0){//nothing
+					//canvas_ctx.drawImage(wall_img,i,j,1,1); //remove this later?
+			//}
+			/*else*/ if(map_array[i][j]== 1){//player
 				canvas_ctx.drawImage(player_img,i,j,1,1);
 			}
 			else if(map_array[i][j]== 2){//enemy
@@ -342,7 +367,7 @@ function render(){
 				canvas_ctx.drawImage(ladder_img,i,j,1,1);
 			}
 		}
-	}
+	}//var tempb = performance.now(); console.log("render time: ",tempb - tempa);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -351,12 +376,14 @@ var time_current=0; //fps counter vars
 var time_past=0;
 var lastframetimems = 0;
 var delta = 0;
-var timestep = 1000/30; //tick rate control. divisor = ticks per second which controls speed
-function mainloop(timestamp){
+var timestep = 1000/30; //tick rate control. divisor = ticks per second which controls speed TODO: make speed of objects real time dependent not tick rate dependent
+
+/*function mainloop(timestamp){ //old attempt. mostly working but can't control framerate properly
 	if(run == true){ //if run = false game pauses or stops and gets out of battle tab with win/lose condition
-	
+		var tempa = performance.now();
 		time_current=performance.now();
 		document.getElementById("fps").innerHTML = (1000/(time_current-time_past)).toPrecision(3); //frame rate counter
+		console.log("framerate: ",(1000/(time_current-time_past)).toPrecision(3));
 		time_past=time_current;
 
 		delta += timestamp - lastframetimems;
@@ -372,35 +399,39 @@ function mainloop(timestamp){
 		}
 		//update();
 		render();
+		//console.log("timestamp: ",timestamp);
+		//console.log("delta: ",delta);
 		requestAnimationFrame(mainloop);
-	}
-}
-//requestAnimationFrame(mainloop); //this is here to call manually if no button starts the loop
-
-/* //an attempt to get teh game to fun at 60 fps. mostly unsuccessful
-function mainloop(){
-	setTimeout(mainloop,1000/40);
-		if(run == true){ //if run = false game pauses or stops and gets out of battle tab with win/lose condition
-	
-		time_current=performance.now();
-		document.getElementById("fps").innerHTML = (1000/(time_current-time_past)).toPrecision(3); //frame rate counter
-		time_past=time_current;
-		var timestamp = performance.now();
-		delta += timestamp - lastframetimems;
-		lastframetimems = timestamp;
-		var numupdatesteps = 0;
-		while(delta >= timestep){
-			update(); //put timestep in paren?
-			delta -= timestep;
-			if(++numupdatesteps >= 240){ //resets update wait timer if waits too long. causes game to snap forward
-				delta = 0;
-				break;
-			}
-		}
-		//update();
-		render();
-	}
+	}var tempb = performance.now();console.log("mainloop total: ",tempb-tempa);
 }*/
+//requestAnimationFrame(mainloop); //this is here to call manually if no button starts the loop //delete later?
+
+///* 
+//main attempt to get the game to run at 60 fps //renders at 60 but updates at 30 for speed reasons
+function mainloop(){//var tempa = performance.now();
+	if(run == true){ //if run = false game pauses or stops and gets out of battle tab with win/lose condition
+	
+	time_current=performance.now();
+	document.getElementById("fps").innerHTML = (1000/(time_current-time_past)).toPrecision(3); //frame rate counter
+	//console.log("framerate: ",(1000/(time_current-time_past)).toPrecision(3));
+	time_past=time_current;
+	
+	var timestamp = performance.now();
+	delta += timestamp - lastframetimems;
+	lastframetimems = timestamp;
+	var numupdatesteps = 0;
+	while(delta >= timestep){
+		update(); //put timestep in paren?
+		delta -= timestep;
+		if(++numupdatesteps >= 240){ //resets update wait timer if waits too long. causes game to snap forward
+			delta = 0;
+			break;
+		}
+	}
+	render();
+	setTimeout(mainloop,1000/63); //frame rate controlled here. divisor = target frame rate but might be a bit below for some reason   63
+	}//var tempb = performance.now();console.log("mainloop total: ",tempb-tempa);
+}//*/
 
 //game state pauses but doesn't reset
 function pause(){
@@ -444,7 +475,6 @@ function stop(){
 	player_health = 10;//TODO: high value so player doesn't die instantly?
 	map_array[battle_pos[0]][battle_pos[1]] = 1;
 	//resets enemies
-	//num_enemies = Math.floor(Math.random()*4)+1; //1-4
 	var randtemp = Math.floor(Math.random()*100)+1
 	if(randtemp>=50){num_enemies=1;}
 	else if(randtemp>=25 &&randtemp<50){num_enemies=2;}
@@ -469,6 +499,8 @@ function stop(){
 	enemy_projectile.length = 0;
 	enemy_angle = 0;
 	patrol_delay = 0;
+	chase_delay = 0;
+	ambush_delay = 0;
 	enemy_fire_mode.length = 0;
 	for(i=0;i<num_enemies;i++){
 		enemy_fire_mode[i] = Math.floor(Math.random()*4);
