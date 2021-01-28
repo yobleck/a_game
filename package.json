@@ -15,7 +15,7 @@
   "author": "Yobleck",
   "license": "CC0-1.0, or whatever",
   "devDependencies": {
-    "electron": "^5.0.8"
+    "electron": "^9.4.0"
   },
   "dependencies": {
     "electron-tabs": "^0.9.5",
